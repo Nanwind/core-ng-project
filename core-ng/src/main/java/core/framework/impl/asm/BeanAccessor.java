@@ -1,11 +1,16 @@
 package core.framework.impl.asm;
 
+import core.framework.api.util.Maps;
+import core.framework.impl.reflect.Classes;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
@@ -22,15 +27,14 @@ import static org.objectweb.asm.Opcodes.RETURN;
  */
 public class BeanAccessor {
     private static final BeanAccessorLoader CLASS_LOADER = AccessController.doPrivileged((PrivilegedAction<BeanAccessorLoader>) () -> new BeanAccessorLoader(BeanAccessor.class.getClassLoader()));
+    private static final AtomicInteger INDEX = new AtomicInteger();
 
-    public final Field[] fields;
+    public final Map<String, BeanField> fields = Maps.newHashMap();
 
     public BeanAccessor(Class<?> beanClass) {
-        java.lang.reflect.Field[] fields = beanClass.getFields();
-        this.fields = new Field[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            java.lang.reflect.Field field = fields[i];
-            this.fields[i] = new Field(field.getName(), field.getType(), buildAccessor(beanClass, field));
+        List<java.lang.reflect.Field> fields = Classes.instanceFields(beanClass);
+        for (java.lang.reflect.Field field : fields) {
+            this.fields.put(field.getName(), new BeanField(field.getName(), field.getType(), buildAccessor(beanClass, field)));
         }
     }
 
@@ -39,7 +43,7 @@ public class BeanAccessor {
 
         String beanType = asmType(beanClass);
         String fieldName = field.getName();
-        String accessorType = beanType + "$" + fieldName + "Accessor";
+        String accessorType = beanType + "$" + fieldName + "Accessor" + INDEX.getAndIncrement();
         String fieldType = asmType(field.getType());
 
         writer.visit(52, ACC_PUBLIC + ACC_SUPER, accessorType, null, "java/lang/Object", new String[]{asmType(FieldAccessor.class)});
@@ -113,17 +117,5 @@ public class BeanAccessor {
 
     private String asmType(Class<?> instanceClass) {
         return instanceClass.getName().replace('.', '/');
-    }
-
-    public static class Field {
-        public final String name;
-        public final Class<?> type;
-        public final FieldAccessor accessor;
-
-        public Field(String name, Class<?> type, FieldAccessor accessor) {
-            this.name = name;
-            this.type = type;
-            this.accessor = accessor;
-        }
     }
 }

@@ -1,6 +1,6 @@
 package core.framework.impl.asm;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -14,10 +14,10 @@ import static org.junit.Assert.assertEquals;
  * @author neo
  */
 public class BeanAccessorTest {
-    private static BeanAccessor accessor;
+    private BeanAccessor accessor;
 
-    @BeforeClass
-    public static void createBeanAccessor() {
+    @Before
+    public void createBeanAccessor() {
         accessor = new BeanAccessor(TestBean.class);
     }
 
@@ -32,28 +32,28 @@ public class BeanAccessorTest {
         bean.zonedDateTimeField = ZonedDateTime.now();
         bean.enumField = TestBean.TestEnum.VALUE1;
 
-        assertEquals(bean.intField, accessor.fields[0].accessor.get(bean));
-        assertEquals(bean.longField, accessor.fields[1].accessor.get(bean));
-        assertEquals(bean.stringField, accessor.fields[2].accessor.get(bean));
-        assertEquals(bean.dateTimeField, accessor.fields[3].accessor.get(bean));
-        assertEquals(bean.dateField, accessor.fields[4].accessor.get(bean));
-        assertEquals(bean.zonedDateTimeField, accessor.fields[5].accessor.get(bean));
-        assertEquals(bean.enumField, accessor.fields[6].accessor.get(bean));
+        assertEquals(bean.intField, accessor.fields.get("intField").accessor.get(bean));
+        assertEquals(bean.longField, accessor.fields.get("longField").accessor.get(bean));
+        assertEquals(bean.stringField, accessor.fields.get("stringField").accessor.get(bean));
+        assertEquals(bean.dateTimeField, accessor.fields.get("dateTimeField").accessor.get(bean));
+        assertEquals(bean.dateField, accessor.fields.get("dateField").accessor.get(bean));
+        assertEquals(bean.zonedDateTimeField, accessor.fields.get("zonedDateTimeField").accessor.get(bean));
+        assertEquals(bean.enumField, accessor.fields.get("enumField").accessor.get(bean));
     }
 
     @Test
     public void set() {
         TestBean bean = new TestBean();
-        accessor.fields[0].accessor.set(bean, 28);
-        accessor.fields[1].accessor.set(bean, 38L);
-        accessor.fields[2].accessor.set(bean, "value");
+        accessor.fields.get("intField").accessor.set(bean, 28);
+        accessor.fields.get("longField").accessor.set(bean, 38L);
+        accessor.fields.get("stringField").accessor.set(bean, "value");
         LocalDateTime dateTime = LocalDateTime.of(2017, 8, 25, 16, 0, 0);
-        accessor.fields[3].accessor.set(bean, dateTime);
+        accessor.fields.get("dateTimeField").accessor.set(bean, dateTime);
         LocalDate date = dateTime.toLocalDate();
-        accessor.fields[4].accessor.set(bean, date);
+        accessor.fields.get("dateField").accessor.set(bean, date);
         ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, ZoneId.systemDefault());
-        accessor.fields[5].accessor.set(bean, zonedDateTime);
-        accessor.fields[6].accessor.set(bean, TestBean.TestEnum.VALUE2);
+        accessor.fields.get("zonedDateTimeField").accessor.set(bean, zonedDateTime);
+        accessor.fields.get("enumField").accessor.set(bean, TestBean.TestEnum.VALUE2);
 
         assertEquals(28, (int) bean.intField);
         assertEquals(38L, (long) bean.longField);
