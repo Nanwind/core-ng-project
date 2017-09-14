@@ -1,6 +1,6 @@
 package core.framework.api.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,19 +15,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * @author neo
  */
-public class JSONTest {
+class JSONTest {
     @Test
-    public void mapField() {
+    void mapField() {
         Bean bean = new Bean();
         bean.attributes.put("key1", "value1");
         bean.attributes.put("key2", "value2");
@@ -40,7 +41,7 @@ public class JSONTest {
     }
 
     @Test
-    public void dateField() {
+    void dateField() {
         Bean bean = new Bean();
         bean.instant = Instant.now();
         bean.dateTime = LocalDateTime.ofInstant(bean.instant, ZoneId.systemDefault());
@@ -56,7 +57,7 @@ public class JSONTest {
     }
 
     @Test
-    public void listObject() {
+    void listObject() {
         List<Bean> beans = JSON.fromJSON(Types.list(Bean.class), "[{\"name\":\"n1\"},{\"name\":\"n2\"}]");
 
         assertEquals(2, beans.size());
@@ -65,7 +66,7 @@ public class JSONTest {
     }
 
     @Test
-    public void optionalObject() {
+    void optionalObject() {
         Optional<Bean> parsedBean = JSON.fromJSON(Types.optional(Bean.class), JSON.toJSON(Optional.empty()));
         assertFalse(parsedBean.isPresent());
 
@@ -80,7 +81,7 @@ public class JSONTest {
     }
 
     @Test
-    public void nullObject() {
+    void nullObject() {
         String json = JSON.toJSON(null);
         Bean bean = JSON.fromJSON(Bean.class, json);
 
@@ -88,7 +89,7 @@ public class JSONTest {
     }
 
     @Test
-    public void enumValue() {
+    void enumValue() {
         assertEquals(TestEnum.A, JSON.fromEnumValue(TestEnum.class, "A1"));
         assertEquals("B1", JSON.toEnumValue(TestEnum.B));
     }

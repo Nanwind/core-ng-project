@@ -2,11 +2,10 @@ package core.framework.impl.db;
 
 import core.framework.api.db.Repository;
 import core.framework.api.util.Lists;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,15 +13,18 @@ import java.time.Month;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 /**
  * @author neo
  */
-public class RepositoryImplAssignedIdEntityTest {
+class RepositoryImplAssignedIdEntityTest {
     private static DatabaseImpl database;
     private static Repository<AssignedIdEntity> repository;
 
-    @BeforeClass
-    public static void createDatabase() {
+    @BeforeAll
+    static void createDatabase() {
         database = new DatabaseImpl();
         database.url("jdbc:hsqldb:mem:.;sql.syntax_mys=true");
         database.vendor = Vendor.MYSQL;
@@ -31,18 +33,18 @@ public class RepositoryImplAssignedIdEntityTest {
         repository = database.repository(AssignedIdEntity.class);
     }
 
-    @AfterClass
-    public static void cleanupDatabase() {
+    @AfterAll
+    static void cleanupDatabase() {
         database.execute("DROP TABLE assigned_id_entity");
     }
 
-    @Before
-    public void truncateTable() {
+    @BeforeEach
+    void truncateTable() {
         database.execute("TRUNCATE TABLE assigned_id_entity");
     }
 
     @Test
-    public void insert() {
+    void insert() {
         AssignedIdEntity entity = new AssignedIdEntity();
         entity.id = UUID.randomUUID().toString();
         entity.stringField = "string";
@@ -51,19 +53,19 @@ public class RepositoryImplAssignedIdEntityTest {
         entity.dateField = LocalDate.of(2016, Month.JULY, 5);
 
         Optional<Long> id = repository.insert(entity);
-        Assert.assertFalse(id.isPresent());
+        assertFalse(id.isPresent());
 
         AssignedIdEntity selectedEntity = repository.get(entity.id).get();
 
-        Assert.assertEquals(entity.id, selectedEntity.id);
-        Assert.assertEquals(entity.stringField, selectedEntity.stringField);
-        Assert.assertEquals(entity.intField, selectedEntity.intField);
-        Assert.assertEquals(entity.bigDecimalField, selectedEntity.bigDecimalField);
-        Assert.assertEquals(entity.dateField, selectedEntity.dateField);
+        assertEquals(entity.id, selectedEntity.id);
+        assertEquals(entity.stringField, selectedEntity.stringField);
+        assertEquals(entity.intField, selectedEntity.intField);
+        assertEquals(entity.bigDecimalField, selectedEntity.bigDecimalField);
+        assertEquals(entity.dateField, selectedEntity.dateField);
     }
 
     @Test
-    public void update() {
+    void update() {
         AssignedIdEntity entity = new AssignedIdEntity();
         entity.id = UUID.randomUUID().toString();
         entity.stringField = "string";
@@ -77,13 +79,13 @@ public class RepositoryImplAssignedIdEntityTest {
         repository.update(updatedEntity);
 
         AssignedIdEntity selectedEntity = repository.get(entity.id).get();
-        Assert.assertEquals(updatedEntity.stringField, selectedEntity.stringField);
-        Assert.assertEquals(entity.intField, selectedEntity.intField);
-        Assert.assertEquals(updatedEntity.dateField, selectedEntity.dateField);
+        assertEquals(updatedEntity.stringField, selectedEntity.stringField);
+        assertEquals(entity.intField, selectedEntity.intField);
+        assertEquals(updatedEntity.dateField, selectedEntity.dateField);
     }
 
     @Test
-    public void delete() {
+    void delete() {
         AssignedIdEntity entity = new AssignedIdEntity();
         entity.id = UUID.randomUUID().toString();
         entity.intField = 11;
@@ -92,11 +94,11 @@ public class RepositoryImplAssignedIdEntityTest {
         repository.delete(entity.id);
 
         Optional<AssignedIdEntity> result = repository.get(entity.id);
-        Assert.assertFalse(result.isPresent());
+        assertFalse(result.isPresent());
     }
 
     @Test
-    public void batchInsert() {
+    void batchInsert() {
         AssignedIdEntity entity1 = new AssignedIdEntity();
         entity1.id = "1";
         entity1.stringField = "value1";
@@ -110,14 +112,14 @@ public class RepositoryImplAssignedIdEntityTest {
         repository.batchInsert(Lists.newArrayList(entity1, entity2));
 
         AssignedIdEntity selectedEntity1 = repository.get("1").get();
-        Assert.assertEquals(entity1.stringField, selectedEntity1.stringField);
+        assertEquals(entity1.stringField, selectedEntity1.stringField);
 
         AssignedIdEntity selectedEntity2 = repository.get("2").get();
-        Assert.assertEquals(entity2.stringField, selectedEntity2.stringField);
+        assertEquals(entity2.stringField, selectedEntity2.stringField);
     }
 
     @Test
-    public void batchDelete() {
+    void batchDelete() {
         AssignedIdEntity entity1 = new AssignedIdEntity();
         entity1.id = "3";
         entity1.intField = 11;
@@ -128,7 +130,7 @@ public class RepositoryImplAssignedIdEntityTest {
 
         repository.batchDelete(Lists.newArrayList(entity1.id, entity2.id));
 
-        Assert.assertFalse(repository.get(entity1.id).isPresent());
-        Assert.assertFalse(repository.get(entity2.id).isPresent());
+        assertFalse(repository.get(entity1.id).isPresent());
+        assertFalse(repository.get(entity2.id).isPresent());
     }
 }

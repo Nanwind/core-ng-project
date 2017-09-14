@@ -1,28 +1,28 @@
 package core.framework.api.template;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author neo
  */
-public class HTMLTemplateEngineTest {
-    HTMLTemplateEngine engine;
+class HTMLTemplateEngineTest {
+    private HTMLTemplateEngine engine;
 
-    @Before
-    public void createHTMLTemplateEngine() {
+    @BeforeEach
+    void createHTMLTemplateEngine() {
         engine = new HTMLTemplateEngine();
     }
 
     @Test
-    public void process() {
+    void process() {
         engine.add("test", "<html><img c:src=\"imageURL\"></html>", TestModel.class);
         TestModel model = new TestModel();
         model.imageURL = "http://domain/image.png";
         String html = engine.process("test", model);
-        Assert.assertThat(html, CoreMatchers.containsString("<img src=http://domain/image.png>"));
+        assertEquals("<html><img src=http://domain/image.png></html>", html);
     }
 
     public static class TestModel {

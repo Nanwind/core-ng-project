@@ -1,6 +1,6 @@
 package core.framework.impl.kafka;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,9 +13,9 @@ import java.util.Map;
 /**
  * @author neo
  */
-public class MessageClassValidatorTest {
+class MessageClassValidatorTest {
     @Test
-    public void validate() {
+    void validate() {
         new MessageClassValidator(TestMessage.class).validate();
     }
 

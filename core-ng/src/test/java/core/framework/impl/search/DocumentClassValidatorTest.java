@@ -1,7 +1,7 @@
 package core.framework.impl.search;
 
 import core.framework.api.search.Index;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,9 +13,9 @@ import java.util.Map;
 /**
  * @author neo
  */
-public class DocumentClassValidatorTest {
+class DocumentClassValidatorTest {
     @Test
-    public void validate() {
+    void validate() {
         new DocumentClassValidator(TestDocument.class).validate();
     }
 
