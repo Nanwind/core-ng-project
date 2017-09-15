@@ -2,15 +2,15 @@ package core.framework.test;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author neo
  */
-public final class IntegrationExtension implements TestInstancePostProcessor {
+public final class MockitoExtension implements TestInstancePostProcessor {
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
-        TestManager manager = TestManager.get();
-        manager.init(context.getRequiredTestClass());
-        manager.injectTest(testInstance);
+        MockitoAnnotations.initMocks(testInstance);
     }
 }
+

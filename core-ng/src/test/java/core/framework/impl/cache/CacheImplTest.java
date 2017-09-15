@@ -4,7 +4,8 @@ import core.framework.api.util.Maps;
 import core.framework.api.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -21,11 +22,13 @@ import static org.mockito.Mockito.when;
  */
 class CacheImplTest {
     private CacheImpl<Integer> cache;
+    @Mock
     private CacheStore cacheStore;
 
     @BeforeEach
-    void createCacheImpl() {
-        cacheStore = Mockito.mock(CacheStore.class);
+    void createCache() {
+        MockitoAnnotations.initMocks(this);
+
         cache = new CacheImpl<>("name", Integer.class, Duration.ofHours(1), cacheStore);
     }
 

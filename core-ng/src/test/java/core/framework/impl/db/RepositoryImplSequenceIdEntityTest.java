@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,12 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author neo
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RepositoryImplSequenceIdEntityTest {
-    private static DatabaseImpl database;
-    private static Repository<SequenceIdEntity> repository;
+    private DatabaseImpl database;
+    private Repository<SequenceIdEntity> repository;
 
     @BeforeAll
-    static void createDatabase() {
+    void createRepository() {
         database = new DatabaseImpl();
         database.url("jdbc:hsqldb:mem:seq;sql.syntax_ora=true");
         database.vendor = Vendor.ORACLE;
@@ -32,7 +34,7 @@ class RepositoryImplSequenceIdEntityTest {
     }
 
     @AfterAll
-    static void cleanupDatabase() {
+    void cleanupDatabase() {
         database.execute("DROP TABLE sequence_id_entity");
         database.execute("DROP SEQUENCE seq");
     }

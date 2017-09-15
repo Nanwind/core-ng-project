@@ -6,20 +6,20 @@ import core.framework.api.util.Exceptions;
 /**
  * @author neo
  */
-public final class TestManager {
+final class TestManager {
     private static final TestManager INSTANCE = new TestManager();
 
-    static TestManager get() {
+    public static TestManager get() {
         return INSTANCE;
     }
 
     private volatile AbstractTestModule testContext;
     private volatile boolean initialized;
 
-    public synchronized void init(Class<?> testClass) {
+    synchronized void init(Class<?> testClass) {
         if (initialized) {
             if (testContext == null) {
-                throw new Error("text context failed to initialize, please check error message from previous integration test");
+                throw new Error("test context failed to initialize, please check error message from previous integration test");
             }
         } else {
             initialized = true;
@@ -27,7 +27,7 @@ public final class TestManager {
         }
     }
 
-    public void injectTest(Object testInstance) {
+    void injectTest(Object testInstance) {
         testContext.inject(testInstance);
     }
 

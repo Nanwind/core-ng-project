@@ -5,7 +5,8 @@ import core.framework.api.util.ClasspathResources;
 import core.framework.api.util.Maps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -20,11 +21,13 @@ import static org.mockito.Mockito.when;
 class WebServiceClientBuilderTest {
     private TestWebService client;
     private WebServiceClientBuilder<TestWebService> builder;
+    @Mock
     private WebServiceClient webServiceClient;
 
     @BeforeEach
     void createTestWebServiceClient() {
-        webServiceClient = Mockito.mock(WebServiceClient.class);
+        MockitoAnnotations.initMocks(this);
+
         builder = new WebServiceClientBuilder<>(TestWebService.class, webServiceClient);
         client = builder.build();
     }

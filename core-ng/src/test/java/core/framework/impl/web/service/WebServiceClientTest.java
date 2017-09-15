@@ -9,7 +9,8 @@ import core.framework.impl.json.JSONMapper;
 import core.framework.impl.web.bean.RequestBeanMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Map;
 
@@ -26,12 +27,14 @@ import static org.mockito.Mockito.verify;
  */
 class WebServiceClientTest {
     private WebServiceClient webServiceClient;
+    @Mock
     private HTTPRequest request;
 
     @BeforeEach
     void createWebServiceClient() {
+        MockitoAnnotations.initMocks(this);
+
         webServiceClient = new WebServiceClient("http://localhost", null, new RequestBeanMapper(), null);
-        request = Mockito.mock(HTTPRequest.class);
     }
 
     @Test

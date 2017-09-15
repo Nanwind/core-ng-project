@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author neo
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DatabaseImplTest {
-    private static DatabaseImpl database;
+    private DatabaseImpl database;
 
     @BeforeAll
-    static void createDatabase() {
+    void createDatabase() {
         database = new DatabaseImpl();
         database.url("jdbc:hsqldb:mem:.;sql.syntax_mys=true");
         database.view(EntityView.class);
@@ -29,7 +31,7 @@ class DatabaseImplTest {
     }
 
     @AfterAll
-    static void cleanupDatabase() {
+    void cleanupDatabase() {
         database.execute("DROP TABLE database_test");
     }
 

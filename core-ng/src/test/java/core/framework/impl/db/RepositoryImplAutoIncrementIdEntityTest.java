@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -20,12 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author neo
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RepositoryImplAutoIncrementIdEntityTest {
-    private static DatabaseImpl database;
-    private static Repository<AutoIncrementIdEntity> repository;
+    private DatabaseImpl database;
+    private Repository<AutoIncrementIdEntity> repository;
 
     @BeforeAll
-    static void createDatabase() {
+    void createRepository() {
         database = new DatabaseImpl();
         database.url("jdbc:hsqldb:mem:mysql;sql.syntax_mys=true");
         database.vendor = Vendor.MYSQL;
@@ -35,7 +37,7 @@ class RepositoryImplAutoIncrementIdEntityTest {
     }
 
     @AfterAll
-    static void cleanupDatabase() {
+    void cleanupDatabase() {
         database.execute("DROP TABLE auto_increment_id_entity");
     }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,12 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 /**
  * @author neo
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RepositoryImplAssignedIdEntityTest {
-    private static DatabaseImpl database;
-    private static Repository<AssignedIdEntity> repository;
+    private DatabaseImpl database;
+    private Repository<AssignedIdEntity> repository;
 
     @BeforeAll
-    static void createDatabase() {
+    void createRepository() {
         database = new DatabaseImpl();
         database.url("jdbc:hsqldb:mem:.;sql.syntax_mys=true");
         database.vendor = Vendor.MYSQL;
@@ -34,7 +36,7 @@ class RepositoryImplAssignedIdEntityTest {
     }
 
     @AfterAll
-    static void cleanupDatabase() {
+    void cleanupDatabase() {
         database.execute("DROP TABLE assigned_id_entity");
     }
 

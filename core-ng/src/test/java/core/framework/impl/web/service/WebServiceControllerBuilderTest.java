@@ -11,7 +11,8 @@ import core.framework.impl.web.response.BeanBody;
 import core.framework.impl.web.response.ResponseImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
@@ -22,20 +23,22 @@ import static org.mockito.Mockito.when;
  * @author neo
  */
 class WebServiceControllerBuilderTest {
+    @Mock
     private Request request;
-    private TestWebServiceImpl serviceImpl;
+    private TestWebServiceImpl testWebService;
 
     @BeforeEach
-    void createTestWebServiceImpl() {
-        serviceImpl = new TestWebServiceImpl();
-        request = Mockito.mock(Request.class);
+    void createTestWebService() {
+        MockitoAnnotations.initMocks(this);
+
+        testWebService = new TestWebServiceImpl();
     }
 
     @Test
     void get() throws Exception {
         when(request.pathParam("id", Integer.class)).thenReturn(1);
 
-        WebServiceControllerBuilder<TestWebService> builder = new WebServiceControllerBuilder<>(TestWebService.class, serviceImpl, TestWebService.class.getDeclaredMethod("get", Integer.class));
+        WebServiceControllerBuilder<TestWebService> builder = new WebServiceControllerBuilder<>(TestWebService.class, testWebService, TestWebService.class.getDeclaredMethod("get", Integer.class));
         Controller controller = builder.build();
 
         String sourceCode = builder.builder.sourceCode();
@@ -54,7 +57,7 @@ class WebServiceControllerBuilderTest {
         when(request.pathParam("id", Integer.class)).thenReturn(1);
         when(request.bean(TestWebService.TestRequest.class)).thenReturn(requestBean);
 
-        WebServiceControllerBuilder<TestWebService> builder = new WebServiceControllerBuilder<>(TestWebService.class, serviceImpl, TestWebService.class.getDeclaredMethod("create", Integer.class, TestWebService.TestRequest.class));
+        WebServiceControllerBuilder<TestWebService> builder = new WebServiceControllerBuilder<>(TestWebService.class, testWebService, TestWebService.class.getDeclaredMethod("create", Integer.class, TestWebService.TestRequest.class));
         Controller controller = builder.build();
 
         String sourceCode = builder.builder.sourceCode();
@@ -71,7 +74,7 @@ class WebServiceControllerBuilderTest {
 
         when(request.bean(Types.list(TestWebService.TestRequest.class))).thenReturn(Lists.newArrayList(requestBean));
 
-        Controller controller = new WebServiceControllerBuilder<>(TestWebService.class, serviceImpl, TestWebService.class.getDeclaredMethod("batch", List.class)).build();
+        Controller controller = new WebServiceControllerBuilder<>(TestWebService.class, testWebService, TestWebService.class.getDeclaredMethod("batch", List.class)).build();
         Response response = controller.execute(request);
         assertEquals(HTTPStatus.OK, response.status());
     }

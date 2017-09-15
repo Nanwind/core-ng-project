@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,12 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 /**
  * @author neo
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RepositoryImplCompositeKeyEntityTest {
-    private static DatabaseImpl database;
-    private static Repository<CompositeKeyEntity> repository;
+    private DatabaseImpl database;
+    private Repository<CompositeKeyEntity> repository;
 
     @BeforeAll
-    static void createDatabase() {
+    void createRepository() {
         database = new DatabaseImpl();
         database.url("jdbc:hsqldb:mem:.;sql.syntax_mys=true");
         database.vendor = Vendor.MYSQL;
@@ -28,7 +30,7 @@ class RepositoryImplCompositeKeyEntityTest {
     }
 
     @AfterAll
-    static void cleanupDatabase() {
+    void cleanupDatabase() {
         database.execute("DROP TABLE composite_key_entity");
     }
 
