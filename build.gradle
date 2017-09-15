@@ -47,12 +47,10 @@ project(':core-ng') {
                 'org.apache.logging.log4j:log4j-api:2.9.0'   // used by elasticsearch
         )
         testImplementation(
-                "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}",
                 "org.hamcrest:java-hamcrest:2.0.0.0",
                 'org.mockito:mockito-core:2.9.0'
         )
         testRuntimeOnly(
-                "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}",
                 'org.hsqldb:hsqldb:2.4.0'
         )
     }
@@ -64,9 +62,13 @@ project(':core-ng-test') {
     dependencies {
         api(
                 project(":core-ng"),
-                'junit:junit:4.12',
+                "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}",
+                "org.hamcrest:java-hamcrest:2.0.0.0",
                 'org.mockito:mockito-core:2.9.0'
         )
+//        implementation(
+//                "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+//        )
         compileOnly(
                 "org.mongodb:mongo-java-driver:${mongoVersion}",
                 "com.github.fakemongo:fongo:2.1.0@jar",

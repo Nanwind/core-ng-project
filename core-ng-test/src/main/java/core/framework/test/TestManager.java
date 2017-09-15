@@ -27,8 +27,8 @@ public final class TestManager {
         }
     }
 
-    public Object createTest(Class<?> testClass) {
-        return testContext.create(testClass);
+    public void injectTest(Object testInstance) {
+        testContext.inject(testInstance);
     }
 
     private AbstractTestModule initializeTestContext(Class<?> testClass) {

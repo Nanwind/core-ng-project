@@ -31,6 +31,11 @@ subprojects {
 
     buildDir = "${rootDir}/build/${name}"
 
+    dependencies {
+        testCompile('org.junit.jupiter:junit-jupiter-api:5.0.0')
+        testRuntime('org.junit.jupiter:junit-jupiter-engine:5.0.0')
+    }
+
     afterEvaluate {
         tasks.withType(Jar) {
             manifest {

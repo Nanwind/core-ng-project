@@ -4,36 +4,36 @@ import core.framework.api.db.Database;
 import core.framework.api.db.Query;
 import core.framework.api.db.Repository;
 import core.framework.test.IntegrationTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author neo
  */
-public class OracleIntegrationTest extends IntegrationTest {
+class OracleIntegrationTest extends IntegrationTest {
     @Inject
     @Named("oracle")
-    Database database;
+    private Database database;
 
     @Inject
     @Named("oracle")
-    Repository<TestSequenceIdDBEntity> repository;
+    private Repository<TestSequenceIdDBEntity> repository;
 
-    @Before
-    public void truncateTable() {
+    @BeforeEach
+    void truncateTable() {
         database.execute("TRUNCATE TABLE test_sequence_id_entity");
     }
 
     @Test
-    public void insert() {
+    void insert() {
         TestSequenceIdDBEntity entity = new TestSequenceIdDBEntity();
         entity.intField = 1;
         Optional<Long> id = repository.insert(entity);
@@ -44,7 +44,7 @@ public class OracleIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void select() {
+    void select() {
         for (int i = 0; i < 30; i++) {
             TestSequenceIdDBEntity entity = new TestSequenceIdDBEntity();
             entity.intField = i;

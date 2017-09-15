@@ -8,6 +8,7 @@ import core.framework.test.module.MockFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
 /**
@@ -34,8 +35,12 @@ public abstract class AbstractTestModule extends Module {
         return ((TestBeanFactory) context.beanFactory).overrideBinding(type, name, instance);
     }
 
-    public <T> T create(Class<T> instanceClass) {
-        return context.beanFactory.create(instanceClass);
+    public <T> void inject(T instance) {
+        try {
+            context.beanFactory.inject(instance);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new Error(e);
+        }
     }
 
     public InitDBConfig initDB() {

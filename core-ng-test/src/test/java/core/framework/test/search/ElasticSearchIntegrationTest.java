@@ -10,8 +10,8 @@ import core.framework.api.util.Lists;
 import core.framework.api.util.Maps;
 import core.framework.test.IntegrationTest;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.time.ZoneId;
@@ -19,26 +19,26 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author neo
  */
-public class ElasticSearchIntegrationTest extends IntegrationTest {
+class ElasticSearchIntegrationTest extends IntegrationTest {
     @Inject
     ElasticSearch elasticSearch;
     @Inject
     ElasticSearchType<TestDocument> documentType;
 
-    @After
-    public void cleanup() {
+    @AfterEach
+    void cleanup() {
         documentType.deleteByQuery(QueryBuilders.matchAllQuery());
         elasticSearch.flush("document");
     }
 
     @Test
-    public void index() {
+    void index() {
         TestDocument document = new TestDocument();
         document.id = "1";
         document.stringField = "value";
@@ -52,7 +52,7 @@ public class ElasticSearchIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void forEach() {
+    void forEach() {
         BulkIndexRequest<TestDocument> request = new BulkIndexRequest<>();
         request.sources = Maps.newHashMap();
         for (int i = 0; i < 30; i++) {
@@ -77,7 +77,7 @@ public class ElasticSearchIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void search() {
+    void search() {
         TestDocument document = new TestDocument();
         document.id = "1";
         document.stringField = "value";

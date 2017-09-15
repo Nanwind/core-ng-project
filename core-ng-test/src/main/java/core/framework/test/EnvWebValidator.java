@@ -1,7 +1,7 @@
 package core.framework.test;
 
+import core.framework.api.util.Strings;
 import core.framework.api.web.site.WebDirectory;
-import org.junit.Assert;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * @author neo
  */
@@ -17,7 +19,7 @@ public final class EnvWebValidator {
     public void validate() throws IOException {
         WebDirectory webDirectory = new WebDirectory();
         Path conf = Paths.get("conf");
-        Assert.assertTrue("conf must be directory, conf=" + conf.toAbsolutePath(), Files.isDirectory(conf));
+        assertTrue(Files.isDirectory(conf), "conf must be directory, conf=" + conf.toAbsolutePath());
 
         List<Path> webDirs = Files.list(conf)
                                   .filter(Files::isDirectory)
@@ -26,7 +28,7 @@ public final class EnvWebValidator {
                                   .collect(Collectors.toList());
 
         for (Path webDir : webDirs) {
-            Assert.assertTrue("conf/env/web must be directory, path=" + webDir, Files.isDirectory(webDir));
+            assertTrue(Files.isDirectory(webDir), "conf/env/web must be directory, path=" + webDir);
             assertOverridesDefault(webDir, webDirectory.root());
         }
     }
@@ -34,7 +36,7 @@ public final class EnvWebValidator {
     private void assertOverridesDefault(Path webDir, Path defaultWebDir) throws IOException {
         Files.walk(webDir).forEach(path -> {
             Path defaultFile = defaultWebDir.resolve(webDir.relativize(path));
-            Assert.assertTrue("conf/env/web must override default web dir, path=" + path + ", defaultWebDir=" + defaultWebDir, Files.exists(defaultFile));
+            assertTrue(Files.exists(defaultFile), Strings.format("conf/env/web must override default web dir, path={}, defaultWebDir={}", path, defaultWebDir));
         });
     }
 }
