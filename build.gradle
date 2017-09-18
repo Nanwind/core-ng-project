@@ -48,7 +48,7 @@ project(':core-ng') {
         )
         testImplementation(
                 "org.hamcrest:java-hamcrest:2.0.0.0",
-                'org.mockito:mockito-core:2.9.0'
+                'org.mockito:mockito-core:2.10.0'
         )
         testRuntimeOnly(
                 'org.hsqldb:hsqldb:2.4.0'
@@ -64,7 +64,7 @@ project(':core-ng-test') {
                 project(":core-ng"),
                 "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}",
                 "org.hamcrest:java-hamcrest:2.0.0.0",
-                'org.mockito:mockito-core:2.9.0'
+                'org.mockito:mockito-core:2.10.0'
         )
 //        implementation(
 //                "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
