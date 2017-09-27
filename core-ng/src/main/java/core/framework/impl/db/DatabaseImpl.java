@@ -13,6 +13,7 @@ import core.framework.impl.resource.Pool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -121,15 +122,15 @@ public final class DatabaseImpl implements Database {
     private Driver driver(String url) {
         try {
             if (url.startsWith("jdbc:mysql:")) {
-                return (Driver) Class.forName("com.mysql.jdbc.Driver").newInstance();
+                return (Driver) Class.forName("com.mysql.jdbc.Driver").getDeclaredConstructor().newInstance();
             } else if (url.startsWith("jdbc:hsqldb:")) {
-                return (Driver) Class.forName("org.hsqldb.jdbc.JDBCDriver").newInstance();
+                return (Driver) Class.forName("org.hsqldb.jdbc.JDBCDriver").getDeclaredConstructor().newInstance();
             } else if (url.startsWith("jdbc:oracle:")) {
-                return (Driver) Class.forName("oracle.jdbc.OracleDriver").newInstance();
+                return (Driver) Class.forName("oracle.jdbc.OracleDriver").getDeclaredConstructor().newInstance();
             } else {
                 throw Exceptions.error("not supported database, url={}", url);
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new Error(e);
         }
     }

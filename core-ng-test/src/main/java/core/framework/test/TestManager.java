@@ -3,6 +3,8 @@ package core.framework.test;
 import core.framework.api.AbstractTestModule;
 import core.framework.api.util.Exceptions;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author neo
  */
@@ -34,10 +36,10 @@ final class TestManager {
     private AbstractTestModule initializeTestContext(Class<?> testClass) {
         Context context = findContext(testClass);
         try {
-            AbstractTestModule module = context.module().newInstance();
+            AbstractTestModule module = context.module().getConstructor().newInstance();
             module.configure();
             return module;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new Error("failed to create test context", e);
         }
     }
