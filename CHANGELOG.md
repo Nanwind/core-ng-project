@@ -2,7 +2,7 @@
 ### 4.17.0 (9/5/2017 - )
 * mongo: tweak mongo encoder and decoder code gen   
 * http: update undertow to 1.4.20, tweak the cookies config
-* search: update es to 5.6 
+* search: update es to 5.6.2
 * web: simplified Response interface, use chained method to set content-type and status going forward
 * test: update junit to 5.0, for old tests before upgrading API, add following dependency
     'junit:junit:4.12'
