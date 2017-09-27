@@ -12,6 +12,11 @@ import core.framework.test.IntegrationTest;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.junit.After;
+import org.junit.Test;
 
 import javax.inject.Inject;
 import java.time.ZoneId;
@@ -80,12 +85,14 @@ class ElasticSearchIntegrationTest extends IntegrationTest {
     void search() {
         TestDocument document = new TestDocument();
         document.id = "1";
+        document.numField = 1;
         document.stringField = "value";
         documentType.index(document.id, document);
         elasticSearch.flush("document");
 
         SearchRequest request = new SearchRequest();
         request.query = QueryBuilders.matchQuery("string_field", document.stringField);
+        request.sorts.add(SortBuilders.scriptSort(new Script("doc['num_field'].value * 3"), ScriptSortBuilder.ScriptSortType.NUMBER));
         SearchResponse<TestDocument> response = documentType.search(request);
 
         assertEquals(1, response.totalHits);
