@@ -10,13 +10,11 @@ import core.framework.api.util.Lists;
 import core.framework.api.util.Maps;
 import core.framework.test.IntegrationTest;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.time.ZoneId;

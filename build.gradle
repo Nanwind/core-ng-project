@@ -20,9 +20,6 @@ project(':core-ng-api') {
         api(
                 'javax.xml.bind:jaxb-api:2.3.0'
         )
-        testRuntimeOnly(
-                "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
-        )
     }
 }
 
@@ -70,9 +67,6 @@ project(':core-ng-test') {
                 "org.hamcrest:java-hamcrest:2.0.0.0",
                 'org.mockito:mockito-core:2.10.0'
         )
-//        implementation(
-//                "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
-//        )
         compileOnly(
                 "org.mongodb:mongo-java-driver:${mongoVersion}",
                 "com.github.fakemongo:fongo:2.1.0@jar",

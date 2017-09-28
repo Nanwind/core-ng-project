@@ -3,4 +3,5 @@
 <suppressions>
     <suppress files="Main.java" checks="UncommentedMain"/>
     <suppress files="core/framework/impl/search/log/ESLogger.java" checks="ParameterNumber"/>
+    <suppress files="core/framework/impl/web/ControllerInspector.java" checks="IllegalImport"/>
 </suppressions>
