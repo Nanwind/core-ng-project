@@ -20,32 +20,18 @@ import java.security.PrivilegedExceptionAction;
  * @author neo
  */
 public class ControllerInspector {
-    private static final Method GET_CONSTANT_POOL;
     private static final Method CONTROLLER_METHOD;
-    private static final int JDK_9_MINOR_VERSION;
-    private static final int JDK_8_MINOR_VERSION;
 
     static {
         try {
-            GET_CONSTANT_POOL = Class.class.getDeclaredMethod("getConstantPool");
-//            AccessController.doPrivileged((PrivilegedAction<Method>) () -> {
-//                GET_CONSTANT_POOL.setAccessible(true);
-//                return GET_CONSTANT_POOL;
-//            });
             CONTROLLER_METHOD = Controller.class.getDeclaredMethod("execute", Request.class);
         } catch (NoSuchMethodException e) {
             throw new Error("failed to initialize controller inspector, please contact arch team", e);
         }
 
-        String jdkVersion = System.getProperty("java.version");
-        if ("9".equals(jdkVersion)) {
-            JDK_9_MINOR_VERSION = 0;
-            JDK_8_MINOR_VERSION = -1;
-        } else if (jdkVersion.startsWith("1.8.0_")) {
-            JDK_9_MINOR_VERSION = -1;
-            JDK_8_MINOR_VERSION = Integer.parseInt(jdkVersion.substring(6));
-        } else {
-            throw Exceptions.error("unsupported jdk version, please contact arch team, jdk={}", jdkVersion);
+        int jdkVersion = Runtime.version().major();
+        if (jdkVersion < 9) {
+            throw Exceptions.error("unsupported jdk version, please contact arch team, version={}", jdkVersion);
         }
     }
 
@@ -61,21 +47,15 @@ public class ControllerInspector {
                 targetMethod = controllerClass.getMethod(CONTROLLER_METHOD.getName(), CONTROLLER_METHOD.getParameterTypes());
                 controllerInfo = controllerClass.getCanonicalName() + "." + CONTROLLER_METHOD.getName();
             } else {
-                Field overrideField = AccessibleObject.class.getDeclaredField("override");
-                Unsafe unsafe = AccessController.doPrivileged((PrivilegedExceptionAction<Unsafe>) () -> {
-                    final Field f = Unsafe.class.getDeclaredField("theUnsafe");
-                    f.setAccessible(true);
-                    return (Unsafe) f.get(null);
-                });
-                long overrideFieldOffset = unsafe.objectFieldOffset(overrideField);
-                unsafe.putBoolean(GET_CONSTANT_POOL, overrideFieldOffset, true);
-                Object constantPool = GET_CONSTANT_POOL.invoke(controllerClass); // constantPool is sun.reflect.ConstantPool, it can be changed in future JDK
+                Method getConstantPool = Class.class.getDeclaredMethod("getConstantPool");
+                overrideAccessible(getConstantPool);
+                Object constantPool = getConstantPool.invoke(controllerClass); // constantPool is sun.reflect.ConstantPool, it can be changed in future JDK
                 Method getSize = constantPool.getClass().getMethod("getSize");
-                unsafe.putBoolean(getSize, overrideFieldOffset, true);
+                overrideAccessible(getSize);
                 int size = (int) getSize.invoke(constantPool);
                 Method getMemberRefInfoAt = constantPool.getClass().getMethod("getMemberRefInfoAt", int.class);
-                unsafe.putBoolean(getMemberRefInfoAt, overrideFieldOffset, true);
-                String[] methodRefInfo = (String[]) getMemberRefInfoAt.invoke(constantPool, methodRefIndex(size));
+                overrideAccessible(getMemberRefInfoAt);
+                String[] methodRefInfo = (String[]) getMemberRefInfoAt.invoke(constantPool, size - 3);
                 Class<?> targetClass = Class.forName(methodRefInfo[0].replace('/', '.'));
                 String targetMethodName = methodRefInfo[1];
                 controllerInfo = targetClass.getCanonicalName() + "." + targetMethodName;
@@ -92,10 +72,14 @@ public class ControllerInspector {
         }
     }
 
-    private int methodRefIndex(int size) {
-        if (JDK_9_MINOR_VERSION >= 0) return size - 3;
-        if (JDK_8_MINOR_VERSION >= 60)
-            return size - 3; // from 1.8.0_60, the index of methodRefInfo is different from previous jdk
-        return size - 2;
+    private void overrideAccessible(Method method) throws PrivilegedActionException, NoSuchFieldException {
+        Field overrideField = AccessibleObject.class.getDeclaredField("override");
+        Unsafe unsafe = AccessController.doPrivileged((PrivilegedExceptionAction<Unsafe>) () -> {
+            Field field = Unsafe.class.getDeclaredField("theUnsafe");
+            field.setAccessible(true);
+            return (Unsafe) field.get(null);
+        });
+        long overrideFieldOffset = unsafe.objectFieldOffset(overrideField);
+        unsafe.putBoolean(method, overrideFieldOffset, true);
     }
 }
