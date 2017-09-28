@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ class MySQLIntegrationTest extends IntegrationTest {
         TestDBEntity selectedEntity = repository.get(entity.id).get();
         assertEquals(entity.dateField, selectedEntity.dateField);
         assertEquals(entity.dateTimeField, selectedEntity.dateTimeField);
-        assertEquals(entity.zonedDateTimeField, selectedEntity.zonedDateTimeField);
+        assertEquals(entity.zonedDateTimeField.truncatedTo(ChronoUnit.MILLIS), selectedEntity.zonedDateTimeField.truncatedTo(ChronoUnit.MILLIS));
     }
 
     @Test
