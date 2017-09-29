@@ -20,6 +20,7 @@
         <!--UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD: Unused public or protected field (TemplateModel uses public field in template)-->
         <!--PZLA_PREFER_ZERO_LENGTH_ARRAYS: Consider returning a zero length array rather than null-->
         <!--DM_CONVERT_CASE: Consider using Locale parameterized version of invoked method-->
+        <!--OBL_UNSATISFIED_OBLIGATION: contains bug, disable for now-->
         <Bug code="CN,SQL,Se"
              pattern="RV_RETURN_VALUE_IGNORED,
                 RV_RETURN_VALUE_IGNORED_BAD_PRACTICE,
@@ -35,7 +36,8 @@
                 BC_UNCONFIRMED_CAST,
                 UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD,
                 PZLA_PREFER_ZERO_LENGTH_ARRAYS,
-                DM_CONVERT_CASE"/>
+                DM_CONVERT_CASE,
+                OBL_UNSATISFIED_OBLIGATION"/>
     </Match>
 
     <Match>
