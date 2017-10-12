@@ -7,19 +7,20 @@ import core.framework.api.util.Maps;
 import core.framework.impl.log.queue.StatMessage;
 import core.log.IntegrationTest;
 import core.log.domain.StatDocument;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * @author neo
  */
-public class StatServiceTest extends IntegrationTest {
+class StatServiceTest extends IntegrationTest {
     @Inject
     StatService statService;
 
@@ -27,7 +28,7 @@ public class StatServiceTest extends IntegrationTest {
     ElasticSearchType<StatDocument> statType;
 
     @Test
-    public void index() {
+    void index() {
         StatMessage message = new StatMessage();
         message.id = "1";
         message.date = Instant.now();
