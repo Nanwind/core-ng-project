@@ -36,4 +36,10 @@ class ExceptionsTest {
         assertEquals("message", error.getMessage());
         assertEquals("cause", error.getCause().getMessage());
     }
+
+    @Test
+    void stackTrace() {
+        String trace = Exceptions.stackTrace(new Error("test-error"));
+        assertThat(trace, containsString("java.lang.Error: test-error"));
+    }
 }

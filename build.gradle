@@ -10,7 +10,7 @@ subprojects {
 def mongoVersion = '3.5.0'
 def elasticVersion = '5.6.2'
 def log4jVersion = '2.9.1'  // used by elasticsearch
-def kafkaVersion = '0.11.0.0'
+def kafkaVersion = '0.11.0.1'
 def jacksonVersion = '2.9.0'
 def junitJupiterVersion = '5.0.1'
 
@@ -27,7 +27,7 @@ project(':core-ng') {
         api project(":core-ng-api")
         api 'javax.inject:javax.inject:1'
         api 'org.slf4j:slf4j-api:1.7.25'
-        implementation 'org.javassist:javassist:3.22.0-CR2'
+        implementation 'org.javassist:javassist:3.22.0-GA'
         implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
         implementation "com.fasterxml.jackson.module:jackson-module-afterburner:${jacksonVersion}"
         implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"

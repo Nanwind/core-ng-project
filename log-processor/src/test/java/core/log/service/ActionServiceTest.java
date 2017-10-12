@@ -32,7 +32,7 @@ class ActionServiceTest extends IntegrationTest {
     ElasticSearchType<TraceDocument> traceType;
 
     @Test
-    void index() throws Exception {
+    void index() {
         ActionLogMessage message1 = new ActionLogMessage();
         message1.id = "1";
         message1.date = Instant.now();
