@@ -4,8 +4,6 @@ import core.framework.api.json.Property;
 import core.framework.api.web.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.annotation.XmlEnumValue;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;

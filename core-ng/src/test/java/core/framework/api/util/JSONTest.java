@@ -1,7 +1,7 @@
 package core.framework.api.util;
 
-import org.junit.jupiter.api.Test;
 import core.framework.api.json.Property;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -78,7 +78,7 @@ class JSONTest {
     }
 
     @Test
-    public void listObject() {
+    void listObject() {
         List<Bean> beans = JSON.fromJSON(Types.list(Bean.class), "[{\"string\":\"n1\"},{\"string\":\"n2\"}]");
 
         assertEquals(2, beans.size());
