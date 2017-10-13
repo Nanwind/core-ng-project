@@ -1,10 +1,13 @@
 ## Change log
-### 4.17.0 (9/30/2017 - )
+### JDK9
 * test: update junit to 5.0, for old tests before upgrading API, add following dependency
     'junit:junit:4.12'
     'org.junit.vintage:junit-vintage-engine:4.12.0'
 
-### 4.16.4 (10/2/2017 - )
+### 5.0.0 (10/13/2017 - )
+* api: remove jaxb dependency, use our own @Property instead (jaxb will be deprecated by jdk9 and it has unnecessary java.desktop module dependency)
+
+### 4.16.4 (10/2/2017 - 10/13/2017)
 * web: enable http2 support
 * web: simplified ControllerInspector, to only support JDK 1.8.0_60 or later
 * lib: update javaassist to 3.22, kafka to 0.11.0.1

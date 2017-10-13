@@ -1,5 +1,6 @@
 package core.framework.impl.web.request;
 
+import core.framework.api.json.Property;
 import core.framework.api.web.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +34,7 @@ class URLParamParserTest {
     }
 
     enum TestEnum {
-        @XmlEnumValue("V1")
+        @Property(name = "V1")
         VALUE
     }
 }

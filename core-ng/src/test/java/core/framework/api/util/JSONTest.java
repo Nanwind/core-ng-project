@@ -1,11 +1,8 @@
 package core.framework.api.util;
 
 import org.junit.jupiter.api.Test;
+import core.framework.api.json.Property;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlEnumValue;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,39 +27,63 @@ class JSONTest {
     @Test
     void mapField() {
         Bean bean = new Bean();
-        bean.attributes.put("key1", "value1");
-        bean.attributes.put("key2", "value2");
+        bean.mapField.put("key1", "value1");
+        bean.mapField.put("key2", "value2");
+
         String json = JSON.toJSON(bean);
-        assertThat(json, containsString("\"attributes\":{\"key1\":\"value1\",\"key2\":\"value2\"}"));
+        assertThat(json, containsString("\"map\":{\"key1\":\"value1\",\"key2\":\"value2\"}"));
 
         Bean parsedBean = JSON.fromJSON(Bean.class, json);
-        assertEquals("value1", parsedBean.attributes.get("key1"));
-        assertEquals("value2", parsedBean.attributes.get("key2"));
+        assertEquals("value1", parsedBean.mapField.get("key1"));
+        assertEquals("value2", parsedBean.mapField.get("key2"));
+    }
+
+    @Test
+    void listField() {
+        Bean bean = new Bean();
+        bean.listField.add("value1");
+        bean.listField.add("value2");
+
+        Child child1 = new Child();
+        child1.booleanField = true;
+        bean.childrenField.add(child1);
+        Child child2 = new Child();
+        child2.booleanField = false;
+        bean.childrenField.add(child2);
+
+        String json = JSON.toJSON(bean);
+        assertThat(json, containsString("\"list\":[\"value1\",\"value2\"],\"children\":[{\"boolean\":true},{\"boolean\":false}]"));
+
+        Bean parsedBean = JSON.fromJSON(Bean.class, json);
+        assertEquals(bean.listField, parsedBean.listField);
+        assertEquals(2, parsedBean.childrenField.size());
+        assertEquals(true, parsedBean.childrenField.get(0).booleanField);
+        assertEquals(false, parsedBean.childrenField.get(1).booleanField);
     }
 
     @Test
     void dateField() {
         Bean bean = new Bean();
-        bean.instant = Instant.now();
-        bean.dateTime = LocalDateTime.ofInstant(bean.instant, ZoneId.systemDefault());
-        bean.date = bean.dateTime.toLocalDate();
-        bean.zonedDateTime = ZonedDateTime.ofInstant(bean.instant, ZoneId.systemDefault());
+        bean.instantField = Instant.now();
+        bean.dateTimeField = LocalDateTime.ofInstant(bean.instantField, ZoneId.systemDefault());
+        bean.dateField = bean.dateTimeField.toLocalDate();
+        bean.zonedDateTimeField = ZonedDateTime.ofInstant(bean.instantField, ZoneId.systemDefault());
         String json = JSON.toJSON(bean);
 
         Bean parsedBean = JSON.fromJSON(Bean.class, json);
-        assertEquals(bean.instant, parsedBean.instant);
-        assertEquals(bean.date, parsedBean.date);
-        assertEquals(bean.dateTime, parsedBean.dateTime);
-        assertEquals(bean.zonedDateTime.toInstant(), parsedBean.zonedDateTime.toInstant());
+        assertEquals(bean.instantField, parsedBean.instantField);
+        assertEquals(bean.dateField, parsedBean.dateField);
+        assertEquals(bean.dateTimeField, parsedBean.dateTimeField);
+        assertEquals(bean.zonedDateTimeField.toInstant(), parsedBean.zonedDateTimeField.toInstant());
     }
 
     @Test
-    void listObject() {
-        List<Bean> beans = JSON.fromJSON(Types.list(Bean.class), "[{\"name\":\"n1\"},{\"name\":\"n2\"}]");
+    public void listObject() {
+        List<Bean> beans = JSON.fromJSON(Types.list(Bean.class), "[{\"string\":\"n1\"},{\"string\":\"n2\"}]");
 
         assertEquals(2, beans.size());
-        assertEquals("n1", beans.get(0).name);
-        assertEquals("n2", beans.get(1).name);
+        assertEquals("n1", beans.get(0).stringField);
+        assertEquals("n2", beans.get(1).stringField);
     }
 
     @Test
@@ -74,10 +95,10 @@ class JSONTest {
         assertFalse(parsedBean.isPresent());
 
         Bean bean = new Bean();
-        bean.name = "name";
+        bean.stringField = "name";
         parsedBean = JSON.fromJSON(Types.optional(Bean.class), JSON.toJSON(Optional.of(bean)));
         assertTrue(parsedBean.isPresent());
-        assertEquals(bean.name, parsedBean.get().name);
+        assertEquals(bean.stringField, parsedBean.get().stringField);
     }
 
     @Test
@@ -89,36 +110,59 @@ class JSONTest {
     }
 
     @Test
+    void notAnnotatedField() {
+        Bean bean = new Bean();
+        bean.notAnnotatedField = 100;
+        String json = JSON.toJSON(bean);
+        assertThat(json, containsString("\"notAnnotatedField\":100"));
+
+        Bean parsedBean = JSON.fromJSON(Bean.class, json);
+        assertEquals(bean.notAnnotatedField, parsedBean.notAnnotatedField);
+    }
+
+    @Test
     void enumValue() {
         assertEquals(TestEnum.A, JSON.fromEnumValue(TestEnum.class, "A1"));
         assertEquals("B1", JSON.toEnumValue(TestEnum.B));
     }
 
     enum TestEnum {
-        @XmlEnumValue("A1")
+        @Property(name = "A1")
         A,
-        @XmlEnumValue("B1")
+        @Property(name = "B1")
         B
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
+    static class Child {
+        @Property(name = "boolean")
+        public Boolean booleanField;
+    }
+
     static class Bean {
-        @XmlElement(name = "attributes")
-        public final Map<String, String> attributes = Maps.newHashMap();
+        @Property(name = "map")
+        public final Map<String, String> mapField = Maps.newHashMap();
 
-        @XmlElement(name = "name")
-        public String name;
+        @Property(name = "list")
+        public final List<String> listField = Lists.newArrayList();
 
-        @XmlElement(name = "date")
-        public LocalDate date;
+        @Property(name = "children")
+        public final List<Child> childrenField = Lists.newArrayList();
 
-        @XmlElement(name = "date_time")
-        public LocalDateTime dateTime;
+        @Property(name = "string")
+        public String stringField;
 
-        @XmlElement(name = "instant")
-        public Instant instant;
+        @Property(name = "date")
+        public LocalDate dateField;
 
-        @XmlElement(name = "zoned_date_time")
-        public ZonedDateTime zonedDateTime;
+        @Property(name = "date_time")
+        public LocalDateTime dateTimeField;
+
+        @Property(name = "instant")
+        public Instant instantField;
+
+        @Property(name = "zonedDateTime")
+        public ZonedDateTime zonedDateTimeField;
+
+        public Integer notAnnotatedField;
     }
 }
